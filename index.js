@@ -59,7 +59,7 @@ HumanRandom.prototype.peekIndex = function(ignoreState) {
     if (state > this.recovery) { // Cooldown, skip
       continue;
     }
-    var prob = Math.pow(this.multiplier, -state) + this._step * state;
+    var prob = Math.pow(this.multiplier, -state) - this._step * state;
     prob *= this.weights ? this.weights[i] : 1.0;
     sum += prob;
   }
@@ -70,7 +70,7 @@ HumanRandom.prototype.peekIndex = function(ignoreState) {
     if (state > this.recovery) { // Cooldown, skip
       continue;
     }
-    var prob = Math.pow(this.multiplier, -state) + this._step * state;
+    var prob = Math.pow(this.multiplier, -state) - this._step * state;
     prob *= this.weights ? this.weights[i] : 1.0;
     if (value >= sum && value < sum + prob) {
       return i;
