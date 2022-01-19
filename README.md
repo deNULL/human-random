@@ -4,7 +4,7 @@ This library is intended to help with generating more "human" random sequences. 
 
 Basically, it just makes it less probable (or impossible) to select same element from a sequence twice in a row.
 
-See the demo to understand it visually.
+See the [demo](https://denull.github.io/human-random/) to understand it visually.
 
 ## Installation
 
