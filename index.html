@@ -14,6 +14,11 @@
       font-size: 16px;
       color: #24292e;
       line-height: 1.5;
+      display: flex;
+      justify-content: center;
+    }
+    main {
+      max-width: 1200px;
     }
     code, pre {
       font-family: Lucida Console, Monaco, monospace;
@@ -26,7 +31,7 @@
     .blocks {
       display: flex;
       flex-wrap: wrap;
-      width: 800px;
+      width: 100%;
     }
     .block {
       width: 8px;
@@ -45,25 +50,27 @@
   </style>
 </head>
 <body>
-  <h5>human-random</h5>
-  <p>This library is intended to help with generating more "human" random sequences. This is different from "true" randomness (and it's definitely makes random generator less secure), so don't use it for any security-related purposes.</p>
-  <p>Basically, it just makes it less probable (or impossible) to select same element from a sequence twice in a row.</p>
-  <h5>Demo</h5>
-  <p>Default (true) random, duplicates happen regularly (as they really should):</p>
-  <div class="blocks" id="blocks0"></div>
-  <p>Using <code>human-random</code>, duplicates are rarer, but can still happen (recovery = 7, mult = 1.2, no cooldown):</p>
-  <div class="blocks" id="blocks1"></div>
-  <p>Larger multiplier → less duplicates (recovery = 7, mult = 2.0, no cooldown):</p>
-  <div class="blocks" id="blocks2"></div>
-  <p>With cooldown (cooldown = 1, recovery = 6, mult = 1.2), no duplicates:</p>
-  <div class="blocks" id="blocks3"></div>
-  <p>Longer cooldown, very regular (cooldown = 2, recovery = 5, mult = 1.2):</p>
-  <div class="blocks" id="blocks4"></div>
-  <p>Max cooldown (fully non-random, repeating pattern):</p>
-  <div class="blocks" id="blocks5"></div>
+  <main>
+    <h5>human-random</h5>
+    <p>This <a href="https://github.com/deNULL/human-random">library</a> is intended to help with generating more "human" random sequences. This is different from "true" randomness (and it's definitely makes random generator less secure), so don't use it for any security-related purposes.</p>
+    <p>Basically, it just makes it less probable (or impossible) to select same element from a sequence twice in a row.</p>
+    <h5>Demo</h5>
+    <p>Default (true) random, duplicates happen regularly (as they really should):</p>
+    <div class="blocks" id="blocks0"></div>
+    <p>Using <code>human-random</code>, duplicates are rarer, but can still happen (recovery = 7, mult = 1.2, no cooldown):</p>
+    <div class="blocks" id="blocks1"></div>
+    <p>Larger multiplier → less duplicates (recovery = 7, mult = 2.0, no cooldown):</p>
+    <div class="blocks" id="blocks2"></div>
+    <p>With cooldown (cooldown = 1, recovery = 6, mult = 1.2), no duplicates:</p>
+    <div class="blocks" id="blocks3"></div>
+    <p>Longer cooldown, very regular (cooldown = 2, recovery = 5, mult = 1.2):</p>
+    <div class="blocks" id="blocks4"></div>
+    <p>Max cooldown (fully non-random, repeating pattern):</p>
+    <div class="blocks" id="blocks5"></div>
+  </main>
 
 <script>
-  var n = 100;
+  var n = 150;
   var m = 5;
 
   function addBlock(index, color) {
