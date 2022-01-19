@@ -29,14 +29,13 @@ function HumanRandom(items, options, state) {
   this._count = typeof items === 'number' ? items : items.length;
 
   this.cooldown = Math.min('cooldown' in options ? options.cooldown : Math.floor(this._count / 5), this._count - 1);
-  this.recovery = Math.min('recovery' in options ? options.recovery : Math.floor(this._count / 3), this._count - this.cooldown - 1);
+  this.recovery = 'recovery' in options ? options.recovery : Math.floor(this._count / 3);
   this.multiplier = 'multiplier' in options ? options.multiplier : 1.3;
   this.normalize = 'normalize' in options ? options.normalize : true;
   this.weights = options.weights;
   this.random = 'random' in options ? options.random : Math.random;
 
-  this._prob0 = Math.pow(this.multiplier, -this.recovery);
-  this._step = this.normalize ? this._prob0 / this.recovery : 0;
+  this._step = this.normalize && this.recovery ? Math.pow(this.multiplier, -this.recovery) / this.recovery : 0;
   this._rand = this.random(); // For peeking
 
   if (state) {
@@ -56,21 +55,23 @@ function HumanRandom(items, options, state) {
 HumanRandom.prototype.peekIndex = function(ignoreState) {
   var sum = 0;
   for (var i = 0; i < this._count; i++) {
-    var state = ignoreState ? 1.0 : this.state[i];
-    if (state < 0) { // Cooldown, skip
+    var state = ignoreState ? 0 : this.state[i];
+    if (state > this.recovery) { // Cooldown, skip
       continue;
     }
-    var prob = state * (this.weights ? this.weights[i] : 1.0);
+    var prob = Math.pow(this.multiplier, -state) + this._step * state;
+    prob *= this.weights ? this.weights[i] : 1.0;
     sum += prob;
   }
   var value = this._rand * sum;
   sum = 0;
   for (var i = 0; i < this._count; i++) {
-    var state = ignoreState ? 1.0 : this.state[i];
-    if (state < 0) { // Cooldown, skip
+    var state = ignoreState ? 0 : this.state[i];
+    if (state > this.recovery) { // Cooldown, skip
       continue;
     }
-    var prob = state * (this.weights ? this.weights[i] : 1.0);
+    var prob = Math.pow(this.multiplier, -state) + this._step * state;
+    prob *= this.weights ? this.weights[i] : 1.0;
     if (value >= sum && value < sum + prob) {
       return i;
     }
@@ -89,27 +90,11 @@ HumanRandom.prototype.peekIndex = function(ignoreState) {
 HumanRandom.prototype.nextIndex = function(ignoreState) {
   var index = this.peekIndex(ignoreState);
   
-  // 1. Update previous state
   for (var i = 0; i < this._count; i++) {
-    if (this.state[i] >= 1.0) { // Recovered
-      continue;
-    }
-    if (this.state[i] == -1) {
-      // Cooldown finished, start recovery
-      this.state[i] = this.recovery > 0 ? (this.normalize ? 0.0 : this._prob0) : 1.0;
-    } else
-    if (this.state[i] < 0) {
-      // Cooling down
-      this.state[i]++;
-    } else {
-      this.state[i] = Math.min(1.0, this.state[i] * this.multiplier + this._step);
-    }
+    this.state[i] = Math.max(this.state[i] - 1, 0);
   }
+  this.state[index] = this.cooldown + this.recovery;
 
-  // 2. Set current index state
-  this.state[index] = this.cooldown > 0 ? -this.cooldown : this._prob0;
-
-  // Advance the PRNG
   this._rand = this.random();
   return index;
 }
@@ -139,11 +124,11 @@ HumanRandom.prototype.next = function(ignoreState) {
 }
 
 /**
- * Resets the intenal state.
+ * Resets the internal state.
  */
 HumanRandom.prototype.reset = function() {
   for (var i = 0; i < this._count; i++) {
-    this.state[i] = 1.0;
+    this.state[i] = 0;
   }
 }
 
