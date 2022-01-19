@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>human-random</title>
+  <script src="index.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: Trebuchet MS, Lucida Sans Unicode, Lucida Grande, Tahoma, Geneva, sans-serif;
+      font-size: 16px;
+      color: #24292e;
+      line-height: 1.5;
+    }
+    code, pre {
+      font-family: Lucida Console, Monaco, monospace;
+      font-size: 0.9em;
+    }
+    h5 {
+      margin: 0 0 22px;
+      font-size: 22px;
+    }
+    .blocks {
+      display: flex;
+      flex-wrap: wrap;
+      width: 800px;
+    }
+    .block {
+      width: 8px;
+      height: 48px;
+    }
+    .color-0 { background-color: #4e79a7 }
+    .color-1 { background-color: #f28e2c }
+    .color-2 { background-color: #e15759 }
+    .color-3 { background-color: #76b7b2 }
+    .color-4 { background-color: #59a14f }
+    .color-5 { background-color: #edc949 }
+    .color-6 { background-color: #af7aa1 }
+    .color-7 { background-color: #ff9da7 }
+    .color-8 { background-color: #9c755f }
+    .color-9 { background-color: #bab0ab }
+  </style>
+</head>
+<body>
+  <h5>human-random</h5>
+  <p>This library is intended to help with generating more "human" random sequences. This is different from "true" randomness (and it's definitely makes random generator less secure), so don't use it for any security-related purposes.</p>
+  <p>Basically, it just makes it less probable (or impossible) to select same element from a sequence twice in a row.</p>
+  <h5>Demo</h5>
+  <p>Default (true) random, duplicates happen regularly (as they really should):</p>
+  <div class="blocks" id="blocks0"></div>
+  <p>Using <code>human-random</code>, duplicates are rarer, but can still happen (recovery = 7, mult = 1.2, no cooldown):</p>
+  <div class="blocks" id="blocks1"></div>
+  <p>Larger multiplier → less duplicates (recovery = 7, mult = 2.0, no cooldown):</p>
+  <div class="blocks" id="blocks2"></div>
+  <p>With cooldown (cooldown = 1, recovery = 6, mult = 1.2), no duplicates:</p>
+  <div class="blocks" id="blocks3"></div>
+  <p>Longer cooldown, very regular (cooldown = 2, recovery = 5, mult = 1.2):</p>
+  <div class="blocks" id="blocks4"></div>
+  <p>Max cooldown (fully non-random, repeating pattern):</p>
+  <div class="blocks" id="blocks5"></div>
+
+<script>
+  var n = 100;
+  var m = 5;
+
+  function addBlock(index, color) {
+    var el = document.createElement('div');
+    el.className = 'block color-' + color;
+    document.getElementById('blocks' + index).appendChild(el);
+  }
+
+  for (var i = 0; i < n; i++) {
+    addBlock(0, ~~(Math.random() * m));
+  }
+
+  var hr1 = new HumanRandom(m, {
+    cooldown: 0,
+    recovery: 7,
+    multiplier: 1.2,
+  });
+  for (var i = 0; i < n; i++) {
+    addBlock(1, hr1.next());
+  }
+
+  var hr2 = new HumanRandom(m, {
+    cooldown: 0,
+    recovery: 7,
+    multiplier: 2.0,
+  });
+  for (var i = 0; i < n; i++) {
+    addBlock(2, hr2.next());
+  }
+  
+  var hr3 = new HumanRandom(m, {
+    cooldown: 1,
+    recovery: 6,
+    multiplier: 1.2,
+  });
+  for (var i = 0; i < n; i++) {
+    addBlock(3, hr3.next());
+  }
+
+  var hr4 = new HumanRandom(m, {
+    cooldown: 2,
+    recovery: 5,
+    multiplier: 1.2,
+  });
+  for (var i = 0; i < n; i++) {
+    addBlock(4, hr4.next());
+  }
+
+  var hr5 = new HumanRandom(m, {
+    cooldown: m - 1,
+  });
+  for (var i = 0; i < n; i++) {
+    addBlock(5, hr5.next());
+  }
+</script>
+</body>
+</html>

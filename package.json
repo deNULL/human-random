@@ -1,0 +1,23 @@
+{
+  "name": "human-random",
+  "version": "1.0.0",
+  "description": "Tiny library to generate sequences which perceived as more \"random\" (with less duplicates)",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deNULL/human-random.git"
+  },
+  "keywords": [
+    "random",
+    "human"
+  ],
+  "author": "Denis Olshin (me@denull.ru)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deNULL/human-random/issues"
+  },
+  "homepage": "https://github.com/deNULL/human-random#readme"
+}
